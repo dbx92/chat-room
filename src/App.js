@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import * as firebase from 'firebase';
 import RoomList from './components/RoomList';
+import MessageList from './components/MessageList';
 
 <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
 
@@ -19,11 +20,30 @@ import RoomList from './components/RoomList';
 
 
 class App extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      roomId:-1,
+      username:"dave"
+    }
+  }
+  setRoom(id){
+    this.setState({roomId:id})
+  }
   render() {
     return (
+      <div>
       <RoomList
       firebase={firebase}
+      roomId= {this.state.roomId}
+      setRoom={(id)=> this.setRoom(id)}
       />
+      <MessageList
+      firebase={firebase}
+      roomId= {this.state.roomId}
+      username= {this.state.username}
+      />
+    </div>
     );
   }
 }
