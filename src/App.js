@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import * as firebase from 'firebase';
 import RoomList from './components/RoomList';
@@ -23,7 +22,7 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      roomId:-1,
+      roomId:"select a room",
       username:"dave"
     }
   }
