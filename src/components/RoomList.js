@@ -18,11 +18,14 @@ createChatRoom(){
   this.setState({newRoomName:""})
 }
 deleteChatRoom(){
-    this.roomsRef.child(this.props.roomId).remove();
+  if(!this.props.activeRoom.key){return};
+    this.roomsRef.child(this.props.activeRoom.key).remove();
+    this.enterChatRoom();
 }
 textEnter(e){
   console.log(e.target.value);
   this.setState({newRoomName:e.target.value})
+  console.log("newRoomName")
 }
 
 componentDidMount(){
@@ -37,18 +40,18 @@ componentDidMount(){
   });
 }
 
-enterChatRoom(id){
-  console.log(id);
-  this.props.setRoom(id||0);
+enterChatRoom(room){
+  console.log(room);
+  this.props.setRoom(room);
 }
   render(){
     return(
       <div className="rooms">
       <h1>Rooms</h1>
+      <h3 >{this.props.activeRoom.name}</h3>
       {this.state.rooms.map((room, i) => (
-        <div key={i} onClick={() => this.enterChatRoom(room.key)}>
+        <div key={i} onClick={() => this.enterChatRoom(room)}>
           {room.name}
-
         </div>
       ))}
         <input type="text" value={this.state.newRoomName} onChange={this.textEnter}/>

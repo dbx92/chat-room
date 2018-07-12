@@ -6,18 +6,18 @@ class MessageList extends Component {
     super(props);
     this.state = {
       messages:[],
-      newMessageName:""
+      newMessageName:"",
+
     };
       this.messagesRef = this.props.firebase.database().ref('messages');
       this.textEnter = this.textEnter.bind(this);
-
   }
 
-  deleteMessage(){
+  deleteMessage(key){
     console.log("delete pressed");
-    console.log(this.state.messages);
+    console.log(key);
+    this.messagesRef.child(key).remove();
 
-  /*this.messagesRef.child(this.state.messages).remove();*/
 }
   componentDidMount(){
     this.messagesRef.on('child_added', snapshot => {
@@ -34,11 +34,11 @@ class MessageList extends Component {
     console.log(e.target.value);
     this.setState({newMessageName:e.target.value})
   }
-
   postNewMessage(){
+    if(!this.props.roomId){return};
     console.log("message posted");
     this.messagesRef.push({
-      username:this.props.username,
+       user:this.props.user.displayName,
       content:this.state.newMessageName,
       sentAt: this.props.firebase.database.ServerValue.TIMESTAMP,
       roomId:this.props.roomId});
@@ -50,17 +50,16 @@ render(){
   return(
     <div className="messages">
     <h2>Messages</h2>
-    <h3>User:{this.props.username}</h3>
-    <h3 >{this.props.roomId}</h3>
-    {this.state.messages.map((message, i) => (
+    {this.state.messages.filter((message) => message.roomId === this.props.roomId).map((message, i) => (
       <div key={i} >
+        {message.user}~~
         {message.content}
+        <button onClick={() => this.deleteMessage(message.key)}>delete</button>
       </div>
 ))
   }
 <input type="text" value={this.state.newMessageName} onChange={this.textEnter}/>
 <button onClick={() => this.postNewMessage()}>Post Message </button>
-<button  onClick={()=>this.deleteMessage()}>Delete Message </button>
 </div>
 )
 }
